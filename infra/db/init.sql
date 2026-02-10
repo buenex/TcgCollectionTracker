@@ -1,0 +1,40 @@
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  hash VARCHAR(64) UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE favorite_cards (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  card_id VARCHAR(50) NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+
+  CONSTRAINT fk_favorite_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
+
+  CONSTRAINT unique_favorite
+    UNIQUE (user_id, card_id)
+);
+
+CREATE TABLE obtained_cards (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  card_id VARCHAR(50) NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+
+  CONSTRAINT fk_obtained_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
+
+  CONSTRAINT unique_obtained
+    UNIQUE (user_id, card_id)
+);
+
+-- índices para performance
+CREATE INDEX idx_users_hash ON users(hash);
+CREATE INDEX idx_favorite_user ON favorite_cards(user_id);
+CREATE INDEX idx_obtained_user ON obtained_cards(user_id);

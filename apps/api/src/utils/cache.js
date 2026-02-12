@@ -1,4 +1,4 @@
-import redis from "../config/redis.js";
+import * as redis from "../config/redis.js";
 
 export async function get(key) {
   return redis.get(key);

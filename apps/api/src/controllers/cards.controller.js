@@ -1,4 +1,4 @@
-import * as cardsService from "../services/cards.service"
+import * as cardsService from "../services/cards.service.js"
 
 export async function searchCards(req, res) {
   try {
@@ -10,6 +10,7 @@ export async function searchCards(req, res) {
 
     return res.status(200).json(cards);
   } catch (err) {
+    console.error(err)
     if (err.message === "Card not found") {
       return res.status(404).json({ error: err.message });
     }

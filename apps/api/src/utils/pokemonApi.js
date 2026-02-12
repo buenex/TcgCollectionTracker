@@ -1,7 +1,7 @@
 const BASE_URL = "https://api.pokemontcg.io/v2/cards";
 
 export async function searchCards(name) {
-  const res = await fetch(`${BASE_URL}?q=name:${name}`, {
+  const res = await fetch(`${BASE_URL}?q=name:*${name}*`, {
     headers: {
       "X-Api-Key": process.env.POKEMON_TCG_API_KEY
     }

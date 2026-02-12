@@ -9,27 +9,31 @@ describe("Cards controller", () => {
     it("should return cards when found", async () => {
         const req = { query: {id:1, name: "Pikachu" } };
         const res = mock.mockResponse();
+        const next = vi.fn();
       
         const card = { id: 1, name: "Pikachu" };
       
         cardsService.searchCardsByName.mockResolvedValue(card);
       
-        await cardsController.searchCards(req, res);
+        await cardsController.searchCards(req, res, next);
       
         expect(cardsService.searchCardsByName).toHaveBeenCalledWith("Pikachu");
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith(card);
       });
       
-      it("should return 404 if card not found", async () => {
+      it("should call next with error if card not found", async () => {
         const req = { query: { name: "Pikachu" } };
         const res = mock.mockResponse();
+        const next = vi.fn();
       
-        cardsService.searchCardsByName.mockRejectedValue(new Error("Card not found"));
+        const error = new Error("Card not found");
+        error.statusCode = 404;
       
-        await cardsController.searchCards(req, res);
+        cardsService.searchCardsByName.mockRejectedValue(error);
       
-        expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.json).toHaveBeenCalledWith({ error: "Card not found" });
+        await cardsController.searchCards(req, res, next);
+      
+        expect(next).toHaveBeenCalledWith(error);
       });
 })

@@ -1,6 +1,6 @@
 import * as cardsService from "../services/cards.service.js"
 
-export async function searchCards(req, res) {
+export async function searchCards(req, res,next) {
   try {
     const { name } = req.query;
     if (!name) {
@@ -10,11 +10,6 @@ export async function searchCards(req, res) {
 
     return res.status(200).json(cards);
   } catch (err) {
-    console.error(err)
-    if (err.message === "Card not found") {
-      return res.status(404).json({ error: err.message });
-    }
-
-    return res.status(500).json({ error: "Internal server error" });
+    next(err)
   }
 }

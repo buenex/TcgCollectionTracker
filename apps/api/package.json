@@ -2,7 +2,7 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.js",
+  "main": "apps/api/src/server.js",
   "type": "module",
   "scripts": {
     "test": "vitest",

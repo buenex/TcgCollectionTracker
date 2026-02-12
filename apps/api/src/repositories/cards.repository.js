@@ -22,3 +22,12 @@ export async function listFavorites(userId) {
 
   return rows.map(r => r.card_id);
 }
+
+export async function getFavorite(userId, cardId) {
+  const { rows } = await db.query(
+    "SELECT card_id FROM favorite_cards WHERE user_id = $1 AND card_id = $2",
+    [userId, cardId]
+  );
+
+  return rows[0] ?? null;
+}

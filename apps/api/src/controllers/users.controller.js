@@ -5,7 +5,9 @@ import * as usersService from "../services/users.service.js";
  */
 export async function createUser(req, res) {
   try {
-    const user = await usersService.createUser(req.body);
+    const { hash } = req.body;
+
+    const user = await usersService.getOrCreateUser(hash);
 
     return res.status(201).json(user);
   } catch (error) {
@@ -28,26 +30,6 @@ export async function getUserCards(req, res) {
     const cards = await usersService.getUserCards(hash);
 
     return res.status(200).json(cards);
-  } catch (error) {
-    if (error.message === "User not found") {
-      return res.status(404).json({ error: error.message });
-    }
-
-    console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-}
-
-/**
- * GET /users/:hash/favourites
- */
-export async function getUserFavourites(req, res) {
-  try {
-    const { hash } = req.params;
-
-    const favourites = await usersService.getUserFavourites(hash);
-
-    return res.status(200).json(favourites);
   } catch (error) {
     if (error.message === "User not found") {
       return res.status(404).json({ error: error.message });

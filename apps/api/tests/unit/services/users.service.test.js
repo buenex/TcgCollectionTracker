@@ -36,19 +36,11 @@ describe("users.service", () => {
     expect(result).toEqual(newUser);
   });
 
-  it("should throw error if email already exists", async () => {
-    usersRepo.findByEmail.mockResolvedValue({ id: 1 });
-  
-    await expect(
-      usersService.createUser({ email: "test@test.com", password: "123" })
-    ).rejects.toThrow("User already exists");
-  });
-
   it("should propagate repository error", async () => {
-    usersRepo.findByEmail.mockRejectedValue(new Error("DB error"));
+    usersRepo.findByHash.mockRejectedValue(new Error("DB error"));
   
     await expect(
-      usersService.createUser({ email: "test@test.com", password: "123" })
+      usersService.getOrCreateUser({hash: "abc123"})
     ).rejects.toThrow("DB error");
   });
   

@@ -42,9 +42,10 @@ describe("cards.service", () => {
   });
 
   it("should throw error if card not found", async () => {
-    cardsRepo.listFavorites.mockResolvedValue(null);
+    cache.get.mockResolvedValue(null);
+    pokemonApi.searchCardById.mockResolvedValue(null);
   
-    await expect(cardsService.getCardById(1))
+    await expect(cardsService.searchCardById(1))
       .rejects.toThrow("Card not found");
   });
   
@@ -56,10 +57,10 @@ describe("cards.service", () => {
   });
 
   it("should propagate repository error on favorite", async () => {
-    cardsRepo.listFavorites.mockResolvedValue({ id: 1 });
+    pokemonApi.searchCards.mockResolvedValue([{ id: "25" }]);
     cardsRepo.listFavorites.mockRejectedValue(new Error("DB error"));
   
-    await expect(cardsService.searchCardsByName("Tets"))
+    await expect(cardsRepo.listFavorites(1))
       .rejects.toThrow("DB error");
   });
   

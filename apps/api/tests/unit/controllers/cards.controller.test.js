@@ -6,30 +6,30 @@ import * as mock from "../../helpers/mockResponse.js"
 vi.mock("../../../src/services/cards.service.js");
 
 describe("Cards controller", () => {
-    it("should return card when found", async () => {
-        const req = { params: { id: "1" } };
+    it("should return cards when found", async () => {
+        const req = { query: {id:1, name: "Pikachu" } };
         const res = mock.mockResponse();
       
         const card = { id: 1, name: "Pikachu" };
       
-        cardsService.searchCardsByName.mockResolvedValue(card.name);
+        cardsService.searchCardsByName.mockResolvedValue(card);
       
         await cardsController.searchCards(req, res);
       
-        expect(cardsService.getCardById).toHaveBeenCalledWith(1);
+        expect(cardsService.searchCardsByName).toHaveBeenCalledWith("Pikachu");
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith(card);
       });
       
       it("should return 404 if card not found", async () => {
-          const req = { params: { id: "1" } };
-          const res = mock.mockResponse();
-        
-          cardsService.searchCardsByName.mockRejectedValue(new Error("Card not found"));
-        
-          await cardsController.searchCards(req, res);
-        
-          expect(res.status).toHaveBeenCalledWith(404);
-          expect(res.json).toHaveBeenCalledWith({ error: "Card not found" });
-    });
+        const req = { query: { name: "Pikachu" } };
+        const res = mock.mockResponse();
+      
+        cardsService.searchCardsByName.mockRejectedValue(new Error("Card not found"));
+      
+        await cardsController.searchCards(req, res);
+      
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({ error: "Card not found" });
+      });
 })

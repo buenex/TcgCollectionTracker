@@ -35,7 +35,7 @@ export async function insertCards(cards) {
       VALUES ${values.join(",")}
       ON CONFLICT DO NOTHING
     `;
-  
+
     await db.query(query, params);
   }
   
@@ -56,7 +56,7 @@ export async function listCards() {
 
 export async function listCardsByName(name) {
     const { rows } = await db.query(
-      "SELECT * FROM cards WHERE name '%' || $1 || '%'",
+      "SELECT * FROM cards WHERE card_name ILIKE '%' || $1 || '%'",
       [name]
     );
   

@@ -1,33 +1,87 @@
 import db from "../config/db.js";
 
-export async function addFavorite(userId, cardId) {
+export async function insertCards(cards) {
+    if (!cards.length) return;
+  
+    const values = [];
+    const params = [];
+  
+    cards.forEach((card, index) => {
+      const baseIndex = index * 6;
+  
+      values.push(
+        `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5}, $${baseIndex + 6})`
+      );
+  
+      params.push(
+        card.card_id,
+        card.name,
+        card.images.small,
+        card.rarity,
+        card.set.id,
+        card.set.name
+      );
+    });
+  
+    const query = `
+      INSERT INTO cards (
+        card_id,
+        card_name,
+        card_url,
+        rarity,
+        set_id,
+        set_name
+      )
+      VALUES ${values.join(",")}
+      ON CONFLICT DO NOTHING
+    `;
+  
+    await db.query(query, params);
+  }
+  
+export async function removeCard(cardId) {
   await db.query(
-    "INSERT INTO favorite_cards (user_id, card_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
-    [userId, cardId]
+    "DELETE FROM cards WHERE card_id = $1",
+    [cardId]
   );
 }
 
-export async function removeFavorite(userId, cardId) {
-  await db.query(
-    "DELETE FROM favorite_cards WHERE user_id = $1 AND card_id = $2",
-    [userId, cardId]
-  );
-}
-
-export async function listFavorites(userId) {
+export async function listCards() {
   const { rows } = await db.query(
-    "SELECT card_id FROM favorite_cards WHERE user_id = $1",
-    [userId]
+    "SELECT * FROM cards"
   );
 
   return rows.map(r => r.card_id);
 }
 
-export async function getFavorite(userId, cardId) {
-  const { rows } = await db.query(
-    "SELECT card_id FROM favorite_cards WHERE user_id = $1 AND card_id = $2",
-    [userId, cardId]
-  );
+export async function listCardsByName(name) {
+    const { rows } = await db.query(
+      "SELECT * FROM cards WHERE name '%' || $1 || '%'",
+      [name]
+    );
+  
+    return rows.map(r => r.name);
+  }
 
-  return rows[0] ?? null;
-}
+  export async function listCardsById(id) {
+    const { rows } = await db.query(
+      "SELECT * FROM cards WHERE card_id ILIKE '%' || $1 || '%'",
+      [id]
+    );
+  
+    return rows.map(r => r.id);
+  }
+
+  export async function searchCards(term) {
+    const { rows } = await db.query(
+      `
+      SELECT *
+      FROM cards
+      WHERE card_id ILIKE '%' || $1 || '%'
+         OR card_name ILIKE '%' || $1 || '%'
+      `,
+      [term]
+    );
+  
+    return rows;
+  }

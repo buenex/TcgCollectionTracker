@@ -1,14 +1,13 @@
 vi.mock("../../../src/utils/cache.js");
 vi.mock("../../../src/utils/pokemonApi.js");
-vi.mock("../../../src/repositories/cards.repository.js")
+vi.mock("../../../src/repositories/cards.repository.js");
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import * as cardsService from "../../../src/services/cards.service.js";
 import * as cache from "../../../src/utils/cache.js";
 import * as pokemonApi from "../../../src/utils/pokemonApi.js";
+import * as cardsRepo from "../../../src/repositories/cards.repository.js";
 import { resetMocks } from "../../helpers/resetMock.js";
-import * as cardsRepo from "../../../src/repositories/cards.repository.js"
-
 
 describe("cards.service", () => {
   beforeEach(() => {
@@ -22,46 +21,44 @@ describe("cards.service", () => {
 
     const result = await cardsService.searchCardsByName("pikachu");
 
-    expect(cache.get).toHaveBeenCalledWith("cards:pikachu");
+    expect(cache.get).toHaveBeenCalledWith("cards:name:pikachu");
     expect(pokemonApi.searchCards).not.toHaveBeenCalled();
     expect(result).toEqual(cachedCards);
   });
 
-  it("should call API when cache is empty", async () => {
-    const apiCards = [{ id: "25" }];
+  it("should call API, save in DB and cache when cache is empty", async () => {
+    const apiCards = [{ card_id: "25" }];
 
     cache.get.mockResolvedValue(null);
-    pokemonApi.searchCards.mockResolvedValue(apiCards);
+    pokemonApi.searchCards.mockResolvedValue({ data: apiCards });
     cache.set.mockResolvedValue();
+    cardsRepo.insertCards.mockResolvedValue();
 
     const result = await cardsService.searchCardsByName("pikachu");
 
     expect(pokemonApi.searchCards).toHaveBeenCalledWith("pikachu");
-    expect(cache.set).toHaveBeenCalled();
+    expect(cardsRepo.insertCards).toHaveBeenCalledWith(apiCards);
+    expect(cache.set).toHaveBeenCalledWith(
+      "cards:name:pikachu",
+      JSON.stringify(apiCards),
+      60 * 60
+    );
     expect(result).toEqual(apiCards);
   });
 
-  it("should throw error if card not found", async () => {
+  it("should throw error if searchCardsByName finds nothing", async () => {
     cache.get.mockResolvedValue(null);
-    pokemonApi.searchCardById.mockResolvedValue(null);
-  
-    await expect(cardsService.searchCardById(1))
-      .rejects.toThrow("Card not found");
-  });
-  
-  it("should not favorite non-existing card", async () => {
-    cardsRepo.listFavorites.mockResolvedValue(null);
-  
-    await expect(cardsService.favoriteCard(1, 1))
+    pokemonApi.searchCards.mockResolvedValue({ data: [] });
+
+    await expect(cardsService.searchCardsByName("unknown"))
       .rejects.toThrow("Card not found");
   });
 
-  it("should propagate repository error on favorite", async () => {
-    pokemonApi.searchCards.mockResolvedValue([{ id: "25" }]);
-    cardsRepo.listFavorites.mockRejectedValue(new Error("DB error"));
-  
-    await expect(cardsRepo.listFavorites(1))
-      .rejects.toThrow("DB error");
+  it("should throw error if searchCardById finds nothing", async () => {
+    cache.get.mockResolvedValue(null);
+    pokemonApi.searchCardById.mockResolvedValue({ data: null });
+
+    await expect(cardsService.searchCardById(1))
+      .rejects.toThrow("Card not found");
   });
-  
 });

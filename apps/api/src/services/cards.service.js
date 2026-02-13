@@ -4,63 +4,44 @@ import { AppError } from "../utils/appError.js";
 import * as cardsRepo from "../repositories/cards.repository.js";
 
 export async function searchCardsByName(name) {
-  const cacheKey = `cards:${name}`;
+  const cacheKey = `cards:name:${name}`;
+
   const cached = await cache.get(cacheKey);
   if (cached) return JSON.parse(cached);
+  const db = await cardsRepo.listCardsByName(name);
+  if (db) return JSON.parse(db);
 
-  const cards = await pokemonApi.searchCards(name);
+  const response = await pokemonApi.searchCards(name);
+  const cards = response?.data ?? [];
 
-  if (!cards || cards.length === 0) {
+  if (cards.length === 0) {
     throw new AppError("Card not found", 404);
   }
 
+  await cardsRepo.insertCards(cards);
   await cache.set(cacheKey, JSON.stringify(cards), 60 * 60);
 
   return cards;
 }
 
+
 export async function searchCardById(id) {
-  const cacheKey = `cards:${id}`;
+  const cacheKey = `cards:id:${id}`;
+
   const cached = await cache.get(cacheKey);
   if (cached) return JSON.parse(cached);
+  const db = await cardsRepo.listCardsByName(id);
+  if (db) return JSON.parse(db);
 
-  const card = await pokemonApi.searchCardById(id);
+  const response = await pokemonApi.searchCardById(id);
+  const card = response?.data;
 
   if (!card) {
     throw new AppError("Card not found", 404);
   }
 
+  await cardsRepo.insertCards([card]);
   await cache.set(cacheKey, JSON.stringify(card), 60 * 60);
-
-  return card;
-}
-
-export async function favoriteCard(userId, cardId) {
-  const cacheKey = `cards:${cardId}`;
-
-  let card = await cache.get(cacheKey);
-  if (card) {
-    card = JSON.parse(card);
-  } else {
-    card = await pokemonApi.searchCardById(cardId);
-
-    if (!card) {
-      throw new AppError("Card not found", 404);
-    }
-
-    await cache.set(cacheKey, JSON.stringify(card), 60 * 60);
-  }
-
-  const alreadyFavorited = await cardsRepo.getFavorite(userId, cardId);
-
-  if (alreadyFavorited) {
-    throw new AppError("Card already favorited", 409);
-  }
-
-  await cardsRepo.addFavorite({
-    user_id: userId,
-    card_id: cardId,
-  });
 
   return card;
 }

@@ -8,11 +8,12 @@ export async function searchCardsByName(name) {
 
   const cached = await cache.get(cacheKey);
   if (cached) return JSON.parse(cached);
+
   const db = await cardsRepo.listCardsByName(name);
-  if (db) return JSON.parse(db);
+  if (db.length>0) return db;
 
   const response = await pokemonApi.searchCards(name);
-  const cards = response?.data ?? [];
+  const cards = response? response : [];
 
   if (cards.length === 0) {
     throw new AppError("Card not found", 404);
@@ -29,9 +30,10 @@ export async function searchCardById(id) {
   const cacheKey = `cards:id:${id}`;
 
   const cached = await cache.get(cacheKey);
+  console.log(cached)
   if (cached) return JSON.parse(cached);
   const db = await cardsRepo.listCardsByName(id);
-  if (db) return JSON.parse(db);
+  if (db!=[]) return JSON.parse(db);
 
   const response = await pokemonApi.searchCardById(id);
   const card = response?.data;

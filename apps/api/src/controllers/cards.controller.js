@@ -1,4 +1,5 @@
 import * as cardsService from "../services/cards.service.js"
+import { AppError } from "../utils/appError.js";
 
 export async function searchCards(req, res, next) {
   try {

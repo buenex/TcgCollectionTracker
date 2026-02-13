@@ -5,7 +5,7 @@ export async function insertCards(cards) {
   
     const values = [];
     const params = [];
-  
+
     cards.forEach((card, index) => {
       const baseIndex = index * 6;
   
@@ -14,12 +14,12 @@ export async function insertCards(cards) {
       );
   
       params.push(
-        card.card_id,
+        card.id,
         card.name,
-        card.images.small,
+        card.image,
         card.rarity,
-        card.set.id,
-        card.set.name
+        card.set_id,
+        card.set_name
       );
     });
   

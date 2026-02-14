@@ -2,21 +2,15 @@ services:
   api:
     build:
       context: ../../apps/api
+    env_file:
+      - ../.env
     ports:
       - "3001:3001"
-    environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_NAME=mydb
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
     depends_on:
-      - db
+      - postgres
       - redis
 
-  db:
+  postgres:
     image: postgres:16
     environment:
       POSTGRES_USER: postgres

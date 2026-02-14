@@ -5,21 +5,22 @@ export async function insertCards(cards) {
   
     const values = [];
     const params = [];
-  
+
     cards.forEach((card, index) => {
-      const baseIndex = index * 6;
+      const baseIndex = index * 7;
   
       values.push(
-        `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5}, $${baseIndex + 6})`
+        `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5}, $${baseIndex + 6}, $${baseIndex + 7})`
       );
   
       params.push(
-        card.card_id,
+        card.id,
         card.name,
-        card.images.small,
+        card.image,
         card.rarity,
-        card.set.id,
-        card.set.name
+        card.code,
+        card.set_id,
+        card.set_name
       );
     });
   
@@ -29,13 +30,14 @@ export async function insertCards(cards) {
         card_name,
         card_url,
         rarity,
+        card_code,
         set_id,
         set_name
       )
       VALUES ${values.join(",")}
       ON CONFLICT DO NOTHING
     `;
-  
+
     await db.query(query, params);
   }
   
@@ -56,20 +58,20 @@ export async function listCards() {
 
 export async function listCardsByName(name) {
     const { rows } = await db.query(
-      "SELECT * FROM cards WHERE name '%' || $1 || '%'",
+      "SELECT * FROM cards WHERE card_name ILIKE '%' || $1 || '%' OR card_code ILIKE '%' || $1 || '%'",
       [name]
     );
   
-    return rows.map(r => r.name);
+    return rows;
   }
 
   export async function listCardsById(id) {
     const { rows } = await db.query(
-      "SELECT * FROM cards WHERE card_id ILIKE '%' || $1 || '%'",
+      "SELECT * FROM cards WHERE card_id ILIKE '%' || $1 || '%' OR card_code ILIKE '%' || $1 || '%'",
       [id]
     );
   
-    return rows.map(r => r.id);
+    return rows;
   }
 
   export async function searchCards(term) {
@@ -78,7 +80,8 @@ export async function listCardsByName(name) {
       SELECT *
       FROM cards
       WHERE card_id ILIKE '%' || $1 || '%'
-         OR card_name ILIKE '%' || $1 || '%'
+         OR card_name ILIKE '%' || $1 || '%
+         OR card_code ILIKE '%' || $1 || '%'
       `,
       [term]
     );

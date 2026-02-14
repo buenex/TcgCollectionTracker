@@ -14,8 +14,9 @@ export async function searchCards(name) {
       return {
         id: full.id,
         name: full.name,
-        image: full.image+"/low.webp",
+        image: full.image?full.getImageURL("high","webp"):null,
         rarity: full.rarity ?? null,
+        code: `${full.id.split("-")[1]}/${full.set?.cardCount?.official??null}`,
         set_id: full.set?.id ?? null,
         set_name: full.set?.name ?? null
       };

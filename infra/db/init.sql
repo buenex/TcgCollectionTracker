@@ -1,7 +1,8 @@
 CREATE TABLE cards (
   card_id VARCHAR(20) UNIQUE NOT NULL,
-  card_name varchar(50),
+  card_name varchar(150),
   card_url VARCHAR(200),
+  card_code VARCHAR(20),
   rarity VARCHAR(30),
   set_id VARCHAR(20),
   set_name VARCHAR(50),

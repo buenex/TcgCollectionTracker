@@ -4,6 +4,14 @@ export async function get(key) {
   return redis.get(key);
 }
 
-export async function set(key, value, ttlSeconds) {
-  return redis.set(key, value, { EX: ttlSeconds });
+export async function set(key, value) {
+  return redis.set(key, value);
+}
+
+export async function del(key) {
+  return redis.del?.(key);
+}
+
+export async function keys(key){
+  return redis.keys(key)
 }

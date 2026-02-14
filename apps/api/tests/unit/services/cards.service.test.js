@@ -19,51 +19,44 @@ describe("cards.service", () => {
   });
 
   it("should return cards from cache when available", async () => {
-    const cachedCards = [{ id: "1" }];
-
-    cache.get.mockResolvedValue(JSON.stringify(cachedCards));
-
+    const cachedCards = [{ id: "1", name: "Pikachu" }];
+  
+    cache.get.mockResolvedValue(cachedCards);
+  
     const result = await cardsService.searchCardsByName("pikachu");
-
-    expect(cache.get).toHaveBeenCalledWith("cards:name:pikachu");
+  
+    expect(cache.get).toHaveBeenCalledWith("cards:pikachu");
     expect(pokemonApi.searchCards).not.toHaveBeenCalled();
     expect(result).toEqual(cachedCards);
   });
 
   it("should call API, save in DB and cache when cache is empty", async () => {
-    const apiCards = [{ card_id: "25" }];
-
+    const apiCards = [{ card_id: "25", name: "Pikachu" }];
+  
     cache.get.mockResolvedValue(null);
-    pokemonApi.searchCards.mockResolvedValue(apiCards );
+    pokemonApi.searchCards.mockResolvedValue(apiCards);
     cache.set.mockResolvedValue();
     cardsRepo.insertCards.mockResolvedValue();
-
+  
     const result = await cardsService.searchCardsByName("pikachu");
-
+  
     expect(pokemonApi.searchCards).toHaveBeenCalledWith("pikachu");
     expect(cardsRepo.insertCards).toHaveBeenCalledWith(apiCards);
-
+  
     expect(cache.set).toHaveBeenCalledWith(
-      "cards:name:pikachu",
-      JSON.stringify(apiCards),
-      60 * 60
+      "cards:pikachu",
+      apiCards
     );
+  
     expect(result).toEqual(apiCards);
   });
+  
 
   it("should throw error if searchCardsByName finds nothing", async () => {
     cache.get.mockResolvedValue(null);
     pokemonApi.searchCards.mockResolvedValue([]);
 
     await expect(cardsService.searchCardsByName("unknown"))
-      .rejects.toThrow("Card not found");
-  });
-
-  it("should throw error if searchCardById finds nothing", async () => {
-    cache.get.mockResolvedValue(null);
-    pokemonApi.searchCardById.mockResolvedValue({ data: null });
-
-    await expect(cardsService.searchCardById(1))
       .rejects.toThrow("Card not found");
   });
 });

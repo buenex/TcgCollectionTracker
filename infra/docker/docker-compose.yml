@@ -22,6 +22,12 @@ services:
       - ../../infra/db:/docker-entrypoint-initdb.d
 
   redis:
-    image: redis:latest
+    image: redis:7-alpine
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  redis_data:

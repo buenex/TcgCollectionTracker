@@ -1,9 +1,13 @@
+vi.mock("../../../src/services/cards.service.js");
+vi.mock("../../../src/utils/pokemonApi.js", () => ({
+  getCard: vi.fn()
+}));
+
 import { describe, it, expect, vi } from "vitest";
 import * as cardsController from "../../../src/controllers/cards.controller.js";
 import * as cardsService from "../../../src/services/cards.service.js";
-import * as mock from "../../helpers/mockResponse.js"
+import * as mock from "../../helpers/mockResponse.js";
 
-vi.mock("../../../src/services/cards.service.js");
 
 describe("Cards controller", () => {
     it("should return cards when found", async () => {

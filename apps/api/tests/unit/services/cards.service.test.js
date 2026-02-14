@@ -1,6 +1,10 @@
 vi.mock("../../../src/utils/cache.js");
 vi.mock("../../../src/utils/pokemonApi.js");
 vi.mock("../../../src/repositories/cards.repository.js");
+vi.mock("../../../src/utils/pokemonApi.js", () => ({
+  searchCards: vi.fn(),
+  searchCardById: vi.fn(),
+}));
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import * as cardsService from "../../../src/services/cards.service.js";
@@ -30,7 +34,7 @@ describe("cards.service", () => {
     const apiCards = [{ card_id: "25" }];
 
     cache.get.mockResolvedValue(null);
-    pokemonApi.searchCards.mockResolvedValue({ data: apiCards });
+    pokemonApi.searchCards.mockResolvedValue(apiCards );
     cache.set.mockResolvedValue();
     cardsRepo.insertCards.mockResolvedValue();
 
@@ -38,6 +42,7 @@ describe("cards.service", () => {
 
     expect(pokemonApi.searchCards).toHaveBeenCalledWith("pikachu");
     expect(cardsRepo.insertCards).toHaveBeenCalledWith(apiCards);
+
     expect(cache.set).toHaveBeenCalledWith(
       "cards:name:pikachu",
       JSON.stringify(apiCards),
@@ -48,7 +53,7 @@ describe("cards.service", () => {
 
   it("should throw error if searchCardsByName finds nothing", async () => {
     cache.get.mockResolvedValue(null);
-    pokemonApi.searchCards.mockResolvedValue({ data: [] });
+    pokemonApi.searchCards.mockResolvedValue([]);
 
     await expect(cardsService.searchCardsByName("unknown"))
       .rejects.toThrow("Card not found");

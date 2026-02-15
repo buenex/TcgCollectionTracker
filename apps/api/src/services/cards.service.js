@@ -30,6 +30,21 @@ export async function searchCardsByName(name) {
   return cards;
 }
 
+export async function searchCardsById(id) {
+
+  const response = await pokemonApi.searchCardById(id);
+  const cards = response ?? [];
+
+  if (cards.length === 0) {
+    throw new AppError("Card not found", 404);
+  }
+
+  await cardsRepo.insertCards(cards);
+  await cache.set(id, cards);
+
+  return cards;
+}
+
 function filterCards(cards, term) {
   const t = term.toLowerCase();
   return cards.filter(c => c.name?.toLowerCase().includes(t));

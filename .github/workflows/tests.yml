@@ -74,8 +74,8 @@ jobs:
             sleep 2
           done
       - name: Create database schema
-        run: psql $DATABASE_URL -f infra/db/init.sql
-        
+        run: psql $DATABASE_URL -f ../../infra/db/init.sql
+
       - name: Run integration tests
         run: npm run test:integration
 

@@ -1,10 +1,10 @@
-import * as favoritesService from "../services/favorites.service.js";
+import * as obtainedService from "../services/obtained.service.js";
 
-export async function listFavorites(req, res, next) {
+export async function listObtained(req, res, next) {
   try {
     const { hash } = req.params;
 
-    const favorites = await favoritesService.listFavorites(hash);
+    const favorites = await obtainedService.listObtained(hash);
 
     res.json(favorites);
   } catch (err) {
@@ -16,7 +16,7 @@ export async function add(req, res, next) {
   try {
     const { hash, cardId } = req.params;
 
-    await favoritesService.addFavorite(hash, cardId);
+    await obtainedService.addObtained(hash, cardId);
 
     res.status(204).send();
   } catch (err) {
@@ -28,7 +28,7 @@ export async function remove(req, res, next) {
   try {
     const { hash, cardId } = req.params;
 
-    await favoritesService.removeFavorite(hash, cardId);
+    await obtainedService.removeObtained(hash, cardId);
 
     res.status(204).send();
   } catch (err) {

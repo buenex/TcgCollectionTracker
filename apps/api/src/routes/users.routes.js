@@ -1,8 +1,11 @@
 import { Router } from "express";
-import favoritesRoutes from "./favorites.routes.js";
+import { createUser, getUserCards,deleteUser } from "../controllers/users.controller.js";
 
 const router = Router();
 
-router.use("/:hash/favorites", favoritesRoutes);
+router.get("/:hash", createUser);
+router.delete("/:hash", deleteUser);
+router.use("/:hash/cards", getUserCards);
+
 
 export default router;

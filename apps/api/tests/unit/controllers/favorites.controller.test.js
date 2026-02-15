@@ -1,89 +1,88 @@
-import { describe, it, expect, vi } from "vitest";
-import * as favoritesController from "../../../src/controllers/favorites.controller.js";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+// ===============================
+// MOCKS (ANTES DOS IMPORTS)
+// ===============================
+
+vi.mock("../../../src/repositories/favorites.repository.js", () => ({
+  listFavorites: vi.fn(),
+  addFavorite: vi.fn(),
+  removeFavorite: vi.fn(),
+  getFavorite: vi.fn(),
+}));
+
+vi.mock("../../../src/services/users.service.js", () => ({
+  getOrCreateUser: vi.fn(),
+}));
+
+// ===============================
+// IMPORTS REAIS DO SERVICE
+// ===============================
+
 import * as favoritesService from "../../../src/services/favorites.service.js";
-import { mockResponse } from "../../helpers/mockResponse.js";
+import * as favoritesRepo from "../../../src/repositories/favorites.repository.js";
+import * as usersService from "../../../src/services/users.service.js";
 
-vi.mock("../../../src/services/favorites.service.js");
-
-describe("Favorites controller", () => {
-  const next = vi.fn();
-
-  describe("list", () => {
-    it("should return favorites", async () => {
-      const req = { params: { hash: "123" } };
-      const res = mockResponse();
-      const favorites = [1, 2, 3];
-
-      favoritesService.listFavorites.mockResolvedValue(favorites);
-
-      await favoritesController.list(req, res, next);
-
-      expect(favoritesService.listFavorites).toHaveBeenCalledWith("123");
-      expect(res.json).toHaveBeenCalledWith(favorites);
-    });
-
-    it("should call next on error", async () => {
-      const req = { params: { hash: "123" } };
-      const res = mockResponse();
-      const error = new Error("fail");
-
-      favoritesService.listFavorites.mockRejectedValue(error);
-
-      await favoritesController.list(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(error);
-    });
+describe("favorites.service", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  describe("add", () => {
-    it("should add favorite and return 204", async () => {
-      const req = { params: { hash: "123", cardId: "10" } };
-      const res = mockResponse();
+  // ===============================
+  // addFavorite
+  // ===============================
 
-      favoritesService.addFavorite.mockResolvedValue();
+  it("should add favorite card for user", async () => {
+    usersService.getOrCreateUser.mockResolvedValue({ hash: "hash123" });
 
-      await favoritesController.add(req, res, next);
+    favoritesRepo.listFavorites.mockResolvedValue([]);
+    favoritesRepo.addFavorite.mockResolvedValue();
 
-      expect(favoritesService.addFavorite).toHaveBeenCalledWith("123", "10");
-      expect(res.status).toHaveBeenCalledWith(204);
-    });
+    await favoritesService.addFavorite("hash123", "cardABC");
 
-    it("should call next on error", async () => {
-      const req = { params: { hash: "123", cardId: "10" } };
-      const res = mockResponse();
-      const error = new Error("fail");
-
-      favoritesService.addFavorite.mockRejectedValue(error);
-
-      await favoritesController.add(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(error);
-    });
+    expect(usersService.getOrCreateUser).toHaveBeenCalledWith("hash123");
+    expect(favoritesRepo.listFavorites).toHaveBeenCalledWith("hash123");
+    expect(favoritesRepo.addFavorite).toHaveBeenCalledWith("hash123", "cardABC");
   });
 
-  describe("remove", () => {
-    it("should remove favorite and return 204", async () => {
-      const req = { params: { hash: "123", cardId: "10" } };
-      const res = mockResponse();
+  it("should not add favorite card if already exists", async () => {
+    usersService.getOrCreateUser.mockResolvedValue({ hash: "hash123" });
 
-      favoritesService.removeFavorite.mockResolvedValue();
+    favoritesRepo.listFavorites.mockResolvedValue(["cardABC"]);
 
-      await favoritesController.remove(req, res, next);
-
-      expect(favoritesService.removeFavorite).toHaveBeenCalledWith("123", "10");
-      expect(res.status).toHaveBeenCalledWith(204);
-    });
-
-    it("should call next on error", async () => {
-      const req = { params: { hash: "123", cardId: "10" } };
-      const res = mockResponse();
-      const error = new Error("fail");
-
-      favoritesService.removeFavorite.mockRejectedValue(error);
-
-      await favoritesController.remove(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(error);
-    });
+    await expect(
+      favoritesService.addFavorite("hash123", "cardABC")
+    ).rejects.toThrow("Card already favorited");
   });
+
+  // ===============================
+  // listFavorites
+  // ===============================
+
+  it("should return favorites list", async () => {
+    usersService.getOrCreateUser.mockResolvedValue({ hash: "hash123" });
+
+    favoritesRepo.listFavorites.mockResolvedValue(["card1", "card2"]);
+
+    const result = await favoritesService.listFavorites("hash123");
+
+    expect(result).toEqual(["card1", "card2"]);
+  });
+
+  // ===============================
+  // removeFavorite
+  // ===============================
+
+  it("should remove favorite card", async () => {
+    usersService.getOrCreateUser.mockResolvedValue({ hash: "hash123" });
+  
+    favoritesRepo.getFavorite.mockResolvedValue(true);
+    favoritesRepo.removeFavorite.mockResolvedValue();
+  
+    await favoritesService.removeFavorite("hash123", "cardABC");
+  
+    expect(favoritesRepo.getFavorite).toHaveBeenCalledWith("hash123", "cardABC");
+    expect(favoritesRepo.removeFavorite).toHaveBeenCalledWith("hash123", "cardABC");
+  });
+  
 });

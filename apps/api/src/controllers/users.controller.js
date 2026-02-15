@@ -6,11 +6,11 @@ import * as usersService from "../services/users.service.js";
  */
 export async function createUser(req, res, next) {
   try {
-    const { hash } = req.body;
+    const { hash } = req.params;
 
     const user = await usersService.getOrCreateUser(hash);
 
-    return res.status(201).json(user);
+    return res.status(200).json(user);
   } catch (err) {
     next(err)
   }
@@ -31,17 +31,20 @@ export async function getUserCards(req, res,next) {
   }
 }
 
-/**
- * GET /users/:hash/obtained
- */
-export async function getUserObtained(req, res,next) {
+
+export async function deleteUser(req, res, next) {
   try {
     const { hash } = req.params;
 
-    const obtained = await usersService.getUserObtained(hash);
+    const deleted = await usersService.deleteUser(hash);
 
-    return res.status(200).json(obtained);
+    if (!deleted) {
+      return res.status(404).json({ deleted: false });
+    }
+
+    return res.status(200).json({ deleted: true });
   } catch (err) {
-    next(err)
+    next(err);
   }
 }
+

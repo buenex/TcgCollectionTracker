@@ -9,3 +9,7 @@ export async function getOrCreateUser(hash) {
 
   return user;
 }
+
+export async function deleteUser(hash) {
+  return {deleted: await usersRepo.deleteUser(hash)};
+}

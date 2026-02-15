@@ -17,47 +17,47 @@ CREATE TABLE users (
 
 CREATE TABLE favorite_cards (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  user_hash VARCHAR(64) NOT NULL,
   card_id VARCHAR(50) NOT NULL,
   created_at TIMESTAMP DEFAULT NOW(),
 
   CONSTRAINT fk_favorite_user
-    FOREIGN KEY (user_id)
-    REFERENCES users(id)
+    FOREIGN KEY (user_hash)
+    REFERENCES users(hash)
     ON DELETE CASCADE,
   
-  CONSTRAINT fk_card
+  CONSTRAINT fk_card_favorited
     FOREIGN KEY (card_id)
     REFERENCES cards(card_id)
     ON DELETE CASCADE,
 
   CONSTRAINT unique_favorite
-    UNIQUE (user_id, card_id)
+    UNIQUE (user_hash, card_id)
 );
 
 CREATE TABLE obtained_cards (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  user_hash VARCHAR(64) NOT NULL,
   card_id VARCHAR(50) NOT NULL,
   created_at TIMESTAMP DEFAULT NOW(),
 
   CONSTRAINT fk_obtained_user
-    FOREIGN KEY (user_id)
-    REFERENCES users(id)
+    FOREIGN KEY (user_hash)
+    REFERENCES users(hash)
     ON DELETE CASCADE,
 
-    CONSTRAINT fk_card
+    CONSTRAINT fk_card_obtained
     FOREIGN KEY (card_id)
     REFERENCES cards(card_id)
     ON DELETE CASCADE,
 
   CONSTRAINT unique_obtained
-    UNIQUE (user_id, card_id)
+    UNIQUE (user_hash, card_id)
 );
 
 -- índices para performance
 CREATE INDEX idx_users_hash ON users(hash);
 CREATE INDEX idx_card_id ON cards(card_id);
 CREATE INDEX idx_card_name ON cards(card_name);
-CREATE INDEX idx_favorite_user ON favorite_cards(user_id);
-CREATE INDEX idx_obtained_user ON obtained_cards(user_id);
+CREATE INDEX idx_favorite_user ON favorite_cards(user_hash);
+CREATE INDEX idx_obtained_user ON obtained_cards(user_hash);

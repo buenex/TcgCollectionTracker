@@ -17,3 +17,10 @@ export async function create(hash) {
 
   return rows[0];
 }
+
+export async function deleteUser(hash) {
+  return await db.query(
+    "DELETE FROM users WHERE hash = $1 ",
+    [hash]
+  );
+}

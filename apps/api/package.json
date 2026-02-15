@@ -8,7 +8,8 @@
     "test": "vitest",
     "test:unit": "vitest tests/unit",
     "test:integration": "vitest tests/integration",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run tests/unit --coverage"
+
   },
   "author": "",
   "license": "ISC",

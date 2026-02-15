@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "vitest",
-    "test:run": "vitest run --coverage"
+    "test:unit": "vitest tests/unit",
+    "test:integration": "vitest tests/integration",
+    "test:coverage": "vitest run --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -17,9 +19,11 @@
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
     "pg": "^8.18.0",
-    "redis": "^5.10.0"
+    "redis": "^5.10.0",
+    "supertest": "^7.2.2"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "vitest": "^4.0.18"
   }
 }

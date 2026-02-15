@@ -27,16 +27,24 @@ export async function searchCards(name) {
 }
 
 export async function searchCardById(id) {
-  const res = await fetch(`${BASE_URL}?q=id:${id}`, {
-    headers: {
-      "X-Api-Key": process.env.POKEMON_TCG_API_KEY
-    }
-  });
+  const cards = await tcgdex.card.list(
+    Query.create().equal('id', id)
+  );
+  const detailedCards = await Promise.all(
+    cards.map(async (card) => {
+      const full = await tcgdex.card.get(card.id);
 
-  if (!res.ok) {
-    throw new Error("Pokemon API error");
-  }
+      return {
+        id: full.id,
+        name: full.name,
+        image: full.image?full.getImageURL("high","webp"):null,
+        rarity: full.rarity ?? null,
+        code: `${full.id.split("-")[1]}/${full.set?.cardCount?.official??null}`,
+        set_id: full.set?.id ?? null,
+        set_name: full.set?.name ?? null
+      };
+    })
+  );
 
-  const data = await res.json();
-  return data.data;
+  return detailedCards;
 }

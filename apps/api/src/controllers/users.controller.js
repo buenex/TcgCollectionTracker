@@ -16,22 +16,6 @@ export async function createUser(req, res, next) {
   }
 }
 
-/**
- * GET /users/:hash/cards
- */
-export async function getUserCards(req, res,next) {
-  try {
-    const { hash } = req.params;
-
-    const cards = await usersService.getUserCards(hash);
-
-    return res.status(200).json(cards);
-  } catch (err) {
-    next(err)
-  }
-}
-
-
 export async function deleteUser(req, res, next) {
   try {
     const { hash } = req.params;

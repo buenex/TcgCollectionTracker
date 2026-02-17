@@ -80,7 +80,7 @@ export async function listCardsByName(name) {
       SELECT *
       FROM cards
       WHERE card_id ILIKE '%' || $1 || '%'
-         OR card_name ILIKE '%' || $1 || '%
+         OR card_name ILIKE '%' || $1 || '%'
          OR card_code ILIKE '%' || $1 || '%'
       `,
       [term]

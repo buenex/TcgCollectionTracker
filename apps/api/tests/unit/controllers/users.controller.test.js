@@ -29,7 +29,7 @@ describe("", async () => {
 
   it("should return 500 on unexpected error", async () => {
     const req = {
-      params: { hash: "abc123" }, // ← AQUI é o correto
+      params: { hash: "abc123" }, 
     };
   
     const res = mock.mockResponse();
@@ -44,6 +44,37 @@ describe("", async () => {
   
     expect(next).toHaveBeenCalledWith(error);
   });
+
+  it("should return 200 on delete user", async () => {
+    const req = {
+      params: { hash: "abc123" },
+    };
   
+    const res = mock.mockResponse();
+    const next = vi.fn();
+
+    usersService.deleteUser.mockResolvedValue({deleted:true})
+  
+    await usersController.deleteUser(req, res, next);
+  
+    expect(usersService.deleteUser).toHaveBeenCalledWith(req.params.hash);
+    expect(res.status).toHaveBeenCalledWith(200);
+  });
+
+  it("should return 404 if users not found", async () => {
+    const req = {
+      params: { hash: "abc123" },
+    };
+  
+    const res = mock.mockResponse();
+    const next = vi.fn();
+
+    usersService.deleteUser.mockResolvedValue(null)
+  
+    await usersController.deleteUser(req, res, next);
+  
+    expect(usersService.deleteUser).toHaveBeenCalledWith(req.params.hash);
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
 
 })

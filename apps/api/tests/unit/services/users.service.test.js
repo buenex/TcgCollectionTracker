@@ -43,5 +43,11 @@ describe("users.service", () => {
       usersService.getOrCreateUser({hash: "abc123"})
     ).rejects.toThrow("DB error");
   });
+
+  it("should delete user ", async () => {
+    usersRepo.deleteUser.mockResolvedValue({deleted:true});
+  
+    await expect(usersService.deleteUser("abc123")).toBeTruthy()
+  });
   
 });

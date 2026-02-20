@@ -1,3 +1,31 @@
+-- Criar banco Pokemon
+CREATE DATABASE pokemon_collector_db;
+
+-- Criar banco TCG
+CREATE DATABASE tcg_collection_db;
+
+
+-- =========================
+-- Estrutura Pokemon
+-- =========================
+
+\connect pokemon_collector_db;
+
+CREATE TABLE IF NOT EXISTS saves (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id VARCHAR(1000) NOT NULL,
+    pokemon_id INTEGER NOT NULL,
+    have BOOLEAN DEFAULT FALSE,
+    UNIQUE (user_id, pokemon_id)
+);
+
+
+-- =========================
+-- Estrutura TCG
+-- =========================
+
+\connect tcg_collection_db;
+
 CREATE TABLE cards (
   card_id VARCHAR(20) UNIQUE NOT NULL,
   card_name varchar(150),
@@ -46,7 +74,7 @@ CREATE TABLE obtained_cards (
     REFERENCES users(hash)
     ON DELETE CASCADE,
 
-    CONSTRAINT fk_card_obtained
+  CONSTRAINT fk_card_obtained
     FOREIGN KEY (card_id)
     REFERENCES cards(card_id)
     ON DELETE CASCADE,
@@ -55,7 +83,7 @@ CREATE TABLE obtained_cards (
     UNIQUE (user_hash, card_id)
 );
 
--- índices para performance
+-- índices
 CREATE INDEX idx_users_hash ON users(hash);
 CREATE INDEX idx_card_id ON cards(card_id);
 CREATE INDEX idx_card_name ON cards(card_name);

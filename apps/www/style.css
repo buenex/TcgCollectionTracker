@@ -1,0 +1,48 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#login-container {
+    padding-top: 10vh;
+}
+
+.card {
+    border-radius: 12px;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #3b4cca; /* Azul Pokémon */
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #ffde00; /* Amarelo Pokémon */
+    color: #3b4cca;
+}
+
+.card-pokemon {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card-pokemon:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-top {
+    object-fit: contain;
+    max-height: 250px;
+}
+
+/* Customizando o switch para ficar mais "Pokemon" */
+.form-check-input:checked {
+    background-color: #3b4cca;
+    border-color: #3b4cca;
+}
+
+.form-check-input:checked[id^="fav-"] {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}

@@ -5,7 +5,7 @@ services:
     env_file:
       - ../.env
     ports:
-      - "3001:3001"
+      - "3002:3002"
     depends_on:
       - postgres
       - redis
@@ -15,7 +15,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: tcg_db
+      POSTGRES_DB: tcg_collection_db
     ports:
       - "5432:5432"
     volumes:

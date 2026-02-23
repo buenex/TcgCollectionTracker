@@ -45,6 +45,11 @@ export async function searchCardsById(id) {
   return cards;
 }
 
+export async function getAllCards() {
+
+  return await cardsRepo.listCards();
+}
+
 function filterCards(cards, term) {
   const t = term.toLowerCase();
   return cards.filter(c => c.name?.toLowerCase().includes(t));

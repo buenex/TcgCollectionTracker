@@ -53,7 +53,7 @@ export async function listCards() {
     "SELECT * FROM cards"
   );
 
-  return rows.map(r => r.card_id);
+  return rows;
 }
 
 export async function listCardsByName(name) {

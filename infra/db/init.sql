@@ -1,10 +1,6 @@
 -- Criar banco Pokemon
 CREATE DATABASE pokemon_collector_db;
 
--- Criar banco TCG
-CREATE DATABASE tcg_collection_db;
-
-
 -- =========================
 -- Estrutura Pokemon
 -- =========================

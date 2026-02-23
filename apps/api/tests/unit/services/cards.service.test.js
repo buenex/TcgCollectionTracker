@@ -132,5 +132,13 @@ describe("cards.service", () => {
   
     expect(result).toBeTruthy();
   });
+
+  it("should get all cards", async () => {
+    cardsRepo.listCards.mockResolvedValue([{card_id:1}]);
+    const result = await cardsService.getAllCards()
+  
+    expect(cardsRepo.listCards).toHaveBeenCalled;
+    expect(result).toEqual([{card_id:1}])
+  });
   
 });

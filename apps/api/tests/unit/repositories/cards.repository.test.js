@@ -63,7 +63,7 @@ expect(params).toEqual([
 
   it("list all cards", async () => {
     const cards = [{card_id:"test12",name:"teste"},{card_id:"tst003",name:"teste2"}];
-    const expected = [cards[0].card_id,cards[1].card_id]
+    const expected = [cards[0],cards[1]]
   
     db.query.mockResolvedValue({rows:cards});
   

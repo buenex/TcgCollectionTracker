@@ -1,6 +1,6 @@
 CREATE DATABASE tcg_test_db;
 
-\c tcg_test_db;
+\connect tcg_test_db;
 
 CREATE TABLE cards (
   card_id VARCHAR(20) UNIQUE NOT NULL,

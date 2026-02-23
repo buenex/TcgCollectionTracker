@@ -40,4 +40,20 @@ describe("Cards controller", () => {
       
         expect(next).toHaveBeenCalledWith(error);
       });
+
+      it("should returnall cards", async () => {
+        const req = {};
+        const res = mock.mockResponse();
+        const next = vi.fn();
+      
+        const cards = [{ id: 1, name: "Pikachu" }];
+      
+        cardsService.getAllCards.mockResolvedValue(cards);
+      
+        await cardsController.getAllSavedCards(req, res, next);
+      
+        expect(cardsService.getAllCards).toHaveBeenCalledWith();
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith(cards);
+      });
 })

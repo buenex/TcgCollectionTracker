@@ -16,3 +16,13 @@ export async function searchCards(req, res, next) {
     next(err);
   }
 }
+
+export async function getAllSavedCards(req, res, next) {
+  try {
+    const cards = await cardsService.getAllCards();
+
+    res.status(200).json(cards);
+  } catch (err) {
+    next(err);
+  }
+}

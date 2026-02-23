@@ -58,6 +58,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Adicione este passo para garantir que o comando psql exista
+      - name: Install PostgreSQL Client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
       - name: Wait for Postgres
         run: |
           until pg_isready -h localhost -p 5432 -U postgres; do
@@ -65,8 +69,11 @@ jobs:
             sleep 2
           done
 
+      # Garante a senha via PGPASSWORD e executa o schema
       - name: Create database schema
         run: psql $DATABASE_URL -f ../../infra/db/init.sql
+        env:
+          PGPASSWORD: postgres
 
       - name: Run integration tests
         run: npm run test:integration

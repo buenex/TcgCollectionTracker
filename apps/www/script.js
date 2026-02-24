@@ -1,5 +1,5 @@
 const CONFIG = {
-    API_BASE: 'http://localhost:3002/v1',
+    API_BASE: 'https://buenex-my-apis.duckdns.org/tcg-tracker/v1',
     DB_NAME: 'TcgPokemonDB',
     DB_VERSION: 1
 };

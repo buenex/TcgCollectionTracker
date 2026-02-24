@@ -26,7 +26,6 @@ export async function searchCardsByName(name) {
   await cardsRepo.insertCards(cards);
   await cache.set(key, cards);
   clearMoreSpecificCaches(name)
-
   return cards;
 }
 

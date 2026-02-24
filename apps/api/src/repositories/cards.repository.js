@@ -26,11 +26,11 @@ export async function insertCards(cards) {
   
     const query = `
       INSERT INTO cards (
-        card_id,
-        card_name,
-        card_url,
+        id,
+        name,
+        image,
         rarity,
-        card_code,
+        code,
         set_id,
         set_name
       )
@@ -43,7 +43,7 @@ export async function insertCards(cards) {
   
 export async function removeCard(cardId) {
   await db.query(
-    "DELETE FROM cards WHERE card_id = $1",
+    "DELETE FROM cards WHERE id = $1",
     [cardId]
   );
 }
@@ -58,7 +58,7 @@ export async function listCards() {
 
 export async function listCardsByName(name) {
     const { rows } = await db.query(
-      "SELECT * FROM cards WHERE card_name ILIKE '%' || $1 || '%' OR card_code ILIKE '%' || $1 || '%'",
+      "SELECT * FROM cards WHERE card_name ILIKE '%' || $1 || '%' OR code ILIKE '%' || $1 || '%'",
       [name]
     );
   
@@ -67,7 +67,7 @@ export async function listCardsByName(name) {
 
   export async function listCardsById(id) {
     const { rows } = await db.query(
-      "SELECT * FROM cards WHERE card_id ILIKE '%' || $1 || '%' OR card_code ILIKE '%' || $1 || '%'",
+      "SELECT * FROM cards WHERE id ILIKE '%' || $1 || '%' OR code ILIKE '%' || $1 || '%'",
       [id]
     );
   
@@ -79,9 +79,9 @@ export async function listCardsByName(name) {
       `
       SELECT *
       FROM cards
-      WHERE card_id ILIKE '%' || $1 || '%'
-         OR card_name ILIKE '%' || $1 || '%'
-         OR card_code ILIKE '%' || $1 || '%'
+      WHERE id ILIKE '%' || $1 || '%'
+         OR name ILIKE '%' || $1 || '%'
+         OR code ILIKE '%' || $1 || '%'
       `,
       [term]
     );

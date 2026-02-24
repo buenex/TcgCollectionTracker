@@ -3,10 +3,10 @@ CREATE DATABASE tcg_test_db;
 \connect tcg_test_db;
 
 CREATE TABLE cards (
-  card_id VARCHAR(20) UNIQUE NOT NULL,
-  card_name varchar(150),
-  card_url VARCHAR(200),
-  card_code VARCHAR(20),
+  id VARCHAR(20) UNIQUE NOT NULL,
+  name varchar(150),
+  image VARCHAR(200),
+  code VARCHAR(20),
   rarity VARCHAR(30),
   set_id VARCHAR(20),
   set_name VARCHAR(50),
@@ -32,7 +32,7 @@ CREATE TABLE favorite_cards (
   
   CONSTRAINT fk_card_favorited
     FOREIGN KEY (card_id)
-    REFERENCES cards(card_id)
+    REFERENCES cards(id)
     ON DELETE CASCADE,
 
   CONSTRAINT unique_favorite
@@ -52,7 +52,7 @@ CREATE TABLE obtained_cards (
 
     CONSTRAINT fk_card_obtained
     FOREIGN KEY (card_id)
-    REFERENCES cards(card_id)
+    REFERENCES cards(id)
     ON DELETE CASCADE,
 
   CONSTRAINT unique_obtained
@@ -61,7 +61,7 @@ CREATE TABLE obtained_cards (
 
 -- índices para performance
 CREATE INDEX idx_users_hash ON users(hash);
-CREATE INDEX idx_card_id ON cards(card_id);
-CREATE INDEX idx_card_name ON cards(card_name);
+CREATE INDEX idx_card_id ON cards(id);
+CREATE INDEX idx_card_name ON cards(name);
 CREATE INDEX idx_favorite_user ON favorite_cards(user_hash);
 CREATE INDEX idx_obtained_user ON obtained_cards(user_hash);

@@ -48,21 +48,21 @@ expect(params).toEqual([
   });
   
   it("remove card", async () => {
-    const card = {card_id:"test12"};
+    const card = {id:"test12"};
   
     db.query.mockResolvedValue(card );
   
-    const result = await cardRepository.removeCard(card.card_id);
+    const result = await cardRepository.removeCard(card.id);
   
     expect(db.query).toHaveBeenCalledWith(
-      "DELETE FROM cards WHERE card_id = $1",
+      "DELETE FROM cards WHERE id = $1",
       ["test12"]
     );
     expect(result).toBeUndefined()
   });
 
   it("list all cards", async () => {
-    const cards = [{card_id:"test12",name:"teste"},{card_id:"tst003",name:"teste2"}];
+    const cards = [{id:"test12",name:"teste"},{id:"tst003",name:"teste2"}];
     const expected = [cards[0],cards[1]]
   
     db.query.mockResolvedValue({rows:cards});
@@ -83,28 +83,28 @@ expect(params).toEqual([
     const result = await cardRepository.listCardsByName(cards[0].name);
   
     expect(db.query).toHaveBeenCalledWith(
-      "SELECT * FROM cards WHERE card_name ILIKE '%' || $1 || '%' OR card_code ILIKE '%' || $1 || '%'",
+      "SELECT * FROM cards WHERE card_name ILIKE '%' || $1 || '%' OR code ILIKE '%' || $1 || '%'",
       [cards[0].name]
     );
     expect(result).toEqual(cards);
   });
 
   it("list card by id", async () => {
-    const cards = [{card_id:"abc123"}];
+    const cards = [{id:"abc123"}];
   
     db.query.mockResolvedValue({rows:cards});
   
-    const result = await cardRepository.listCardsById(cards[0].card_id);
+    const result = await cardRepository.listCardsById(cards[0].id);
   
     expect(db.query).toHaveBeenCalledWith(
-      "SELECT * FROM cards WHERE card_id ILIKE '%' || $1 || '%' OR card_code ILIKE '%' || $1 || '%'",
-      [cards[0].card_id]
+      "SELECT * FROM cards WHERE id ILIKE '%' || $1 || '%' OR code ILIKE '%' || $1 || '%'",
+      [cards[0].id]
     );
     expect(result).toEqual(cards);
   });
 
   it("search card by term", async () => {
-    const cards = [{card_id:"abc123",name:"teste123"}];
+    const cards = [{id:"abc123",name:"teste123"}];
   
     db.query.mockResolvedValue({rows:cards});
   
@@ -114,9 +114,9 @@ expect(params).toEqual([
       `
       SELECT *
       FROM cards
-      WHERE card_id ILIKE '%' || $1 || '%'
-         OR card_name ILIKE '%' || $1 || '%'
-         OR card_code ILIKE '%' || $1 || '%'
+      WHERE id ILIKE '%' || $1 || '%'
+         OR name ILIKE '%' || $1 || '%'
+         OR code ILIKE '%' || $1 || '%'
       `,
       ["teste12"]
     );

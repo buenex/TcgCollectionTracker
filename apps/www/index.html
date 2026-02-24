@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Coleção</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+
+    <div id="login-container" class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Login</h3>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Usuário</label>
+                            <input type="text" id="username" class="form-control" placeholder="Digite seu user">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Senha</label>
+                            <input type="password" id="password" class="form-control" placeholder="Digite sua senha">
+                        </div>
+                        <button id="login-btn" class="btn btn-primary w-100">Entrar / Cadastrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-container" class="container mt-5 d-none">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 rounded">
+            <div class="container-fluid">
+                <span class="navbar-brand">Minha Coleção</span>
+                <div class="d-flex">
+                    <span id="user-display" class="navbar-text me-3 text-white"></span>
+                    <button id="logout-btn" class="btn btn-outline-danger btn-sm">Sair</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2>Bem-vindo à sua Dashboard</h2>
+                <hr>
+            </div>
+        </div>
+        <div class="row mb-4 justify-content-center">
+            <div class="col-md-8">
+                <div class="input-group mb-3 shadow-sm">
+                    <input type="text" id="search-input" class="form-control form-control-lg" placeholder="Nome da carta ou ID...">
+                    <button class="btn btn-primary px-4" type="button" id="search-btn">
+                        Buscar Carta
+                    </button>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 d-flex justify-content-center gap-2">
+                        <button id="filter-all" class="btn btn-outline-secondary btn-sm filter-active">Todas</button>
+                        <button id="filter-obtained" class="btn btn-outline-secondary btn-sm">Minha Coleção</button>
+                        <button id="filter-favorites" class="btn btn-outline-secondary btn-sm">Favoritas ⭐</button>
+                    </div>
+                </div>
+                <div id="object-list" class="row row-cols-1 row-cols-md-3 g-4"></div>
+                <div id="object-list" class="row row-cols-1 row-cols-md-3 g-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

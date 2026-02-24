@@ -4,11 +4,7 @@ import usersRoutes from "./routes/users.routes.js";
 import cors from "cors"
 
 const app = express();
-app.use(cors({
-  origin: '*', // Permite qualquer origem
-  methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors({ origin: 'https://buenex.github.io' }));
 
 app.use(express.json());
 

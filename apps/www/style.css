@@ -1,29 +1,21 @@
+/* --- ESTRUTURA E FUNDO ORIGINAL --- */
 body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-color: #f8f9fa; /* Cinza bem claro original do Bootstrap */
+    color: #212529; /* Texto escuro padrão */
 }
 
 #login-container {
     padding-top: 10vh;
 }
 
+/* --- CARDS POKÉMON --- */
 .card {
     border-radius: 12px;
-    border: none;
-}
-
-.btn-primary {
-    background-color: #3b4cca; /* Azul Pokémon */
-    border: none;
-}
-
-.btn-primary:hover {
-    background-color: #ffde00; /* Amarelo Pokémon */
-    color: #3b4cca;
-}
-
-.card-pokemon {
+    border: 1px solid rgba(0,0,0,.125); /* Borda padrão do card */
+    background-color: #fff; /* Fundo branco original */
     transition: transform 0.2s ease-in-out;
 }
 
@@ -36,13 +28,65 @@ body {
     max-height: 250px;
 }
 
-/* Customizando o switch para ficar mais "Pokemon" */
-.form-check-input:checked {
-    background-color: #3b4cca;
-    border-color: #3b4cca;
+/* --- ESTADO: FAVORITADA (BORDA AMARELA) --- */
+.card.is-favorite {
+    border: 2px solid #ffc107 !important; /* Borda dourada/amarela */
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.3) !important;
 }
 
-.form-check-input:checked[id^="fav-"] {
-    background-color: #dc3545;
-    border-color: #dc3545;
+/* --- ESTADO: NÃO OBTIDA (GRAYSCALE) --- */
+.grayscale {
+    filter: grayscale(1);
+    opacity: 0.6;
+    transition: all 0.4s ease;
+}
+
+/* --- BOTÕES E INTERAÇÃO --- */
+.btn-primary {
+    background-color: #3b4cca; /* Azul Pokémon */
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #ffde00; /* Amarelo Pokémon */
+    color: #3b4cca;
+}
+
+.btn-status {
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: all 0.2s ease;
+    user-select: none;
+    filter: grayscale(100%);
+    opacity: 0.4;
+}
+
+.btn-status.active {
+    filter: grayscale(0%);
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+.btn-status.is-fav.active { 
+    color: #ffc107; 
+    text-shadow: 0 0 10px rgba(255,193,7,0.5); 
+}
+
+.btn-status.is-obt.active { 
+    color: #28a745; /* Verde original */
+}
+
+/* --- FILTROS --- */
+.filter-active {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+/* Ajuste de textos para fundo claro */
+.text-muted {
+    color: #6c757d !important;
+}
+
+.badge.bg-dark {
+    background-color: #212529 !important;
 }

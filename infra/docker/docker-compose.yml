@@ -16,8 +16,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: tcg_collection_db
-    networks:
-      - global_network
     ports:
       - "5432:5432"
     volumes:
@@ -33,7 +31,3 @@ services:
 
 volumes:
   redis_data:
-
-networks:
-  global_network:
-    external: true
